@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
 from os import environ
 from dotenv import load_dotenv
 from pathlib import Path
+from cloudinary import config
 
 load_dotenv()
 
@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m0j+v0=sj%907!he@(2!+e41u2nhs@rh50zy!4o3m3dw^=gtr='
+SECRET_KEY = 'django-insecure-*d1=c(49u2uf3ituydk&$y59ob+x53n(l===m4(^8d)4!1cr#r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'gestion',
     'rest_framework',
     'drf_yasg',
+    'cloudinary'
 ]
 
 MIDDLEWARE = [
@@ -133,12 +134,16 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Sirve para indicar a Django cual sera ahora el nuevo modelo del auth_user
 AUTH_USER_MODEL = 'gestion.Usuario'
 
+# Sirve para indicar donde queremos que se guarde los archivos subidos
 MEDIA_ROOT = BASE_DIR / 'imagenes'
 
+# Sirve para indicar cual sera el endpoint para acceder a los archivos subidos
 MEDIA_URL = 'imagenes/'
 
+# Sirve para configurar nuestro django rest framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # sirve para indicar a DRF cual sera la clase se usara para las cosas relacionadas a la autenticacion
@@ -148,18 +153,28 @@ REST_FRAMEWORK = {
 
 from datetime import timedelta
 
+# Sirve para modificar la configuracion de rest framenwork simple JWT
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=365)
+    'ACCESS_TOKEN_LIFETIME':  timedelta(days=365) 
 }
 
 
+# Sirve para configuara la documentacion de nuestro Swagger
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS':{
         'basic':{
-            'type' : 'apiKey',
-            'description' : 'Bearer <YOUR_TOKEN>',
-            'name' : 'Authorization',
-            'in' : 'header',
+            # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md#security-definitions-object
+            'type': 'apiKey',
+            'description': 'Bearer <YOUR_TOKEN>',
+            'name': 'Authorization', # el header por el cual se va a enviar esta token
+            'in': 'header', # donde se pasaria la token , por el query param o por los headers
         }
     }
 }
+
+config(
+    cloud_name=environ.get('CLOUDINARY_NAME'),
+    api_key=environ.get('CLOUDINARY_API_KEY'),
+    api_secret=environ.get('CLOUDINARY_API_SECRET'),
+    secure=True
+)
