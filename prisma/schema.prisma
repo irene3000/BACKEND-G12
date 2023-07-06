@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario{
+  id Int @id @default(autoincrement())
+  nombre String 
+  apellido String? //la columna puede tener valores nulos
+  correo String @unique //con el @ agregamos configuraciones adicionales de la COLLUMNA
+  password String @db.Text
+  tipoUsuario TipoUsuario @map("tipo_usuario")
+
+  direcciones Direccion[]
+
+  @@map("usuarios")//sirve para modificar configuraciones de la TABLA
+}
+
+model Direccion {
+    id           Int     @id @default(autoincrement())
+    calle        String
+    numero       Int
+    referencia   String?
+    departamento String?
+    usuarioId    Int     @map("usuario_id")
+
+    usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+    @@map("direcciones")
+}
+
+model Producto{
+  id           Int     @id @default(autoincrement())
+  nombre String
+  precio Float
+  imagen String?
+  disponible Boolean @default(true)
+
+  @@map("productos")
+}
+
+enum TipoUsuario {
+  ADMIN
+  CLIENTE
+}
