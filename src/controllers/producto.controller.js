@@ -16,7 +16,9 @@ const conexionS3 = new S3({
 
 export const crearProducto = async (req, res) => {
     const { body, file } = req
-    // console.log(file)
+    console.log(file)
+    console.log(req.files)
+    console.log(body)
 
     // subir imagen a s3
     const lecturaArchivo = fs.createReadStream(file.path)

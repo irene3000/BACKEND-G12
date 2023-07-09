@@ -3,6 +3,7 @@ import { usuarioRouter } from './routes/usuario.routes.js'
 import { direccionRouter } from './routes/direccion.routes.js' 
 import { productoRouter } from './routes/producto.routes.js'
 
+
 const servidor = express()
 
 servidor.use(express.json())
