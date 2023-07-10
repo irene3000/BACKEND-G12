@@ -2,3 +2,4 @@ entorno_*
 node_modules
 .env
 imagenes/*
+*.pyc
